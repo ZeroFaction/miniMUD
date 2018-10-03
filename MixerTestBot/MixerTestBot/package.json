@@ -1,0 +1,9 @@
+{
+  "name": "mixer-test-bot",
+  "version": "0.0.0",
+  "description": "MixerTestBot",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  }
+}
