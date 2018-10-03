@@ -1,0 +1,19 @@
+{
+  "name": "mixertestbot",
+  "version": "0.0.1",
+  "description": "A test chat bot for Mixer.com. Will eventually be converted to a miniMUD for TheTableTopGuild",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "mixer",
+    "chatbot"
+  ],
+  "author": "Matthew Mathis",
+  "license": "ISC",
+  "dependencies": {
+    "@mixer/client-node": "^3.2.0",
+    "ws": "^6.0.0"
+  }
+}
