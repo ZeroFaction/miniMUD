@@ -11,8 +11,8 @@ const app = express();
 function getClient() {
     const client = new Client(new DefaultRequestRunner());
     client.use(new OAuthProvider(client, {
-        clientId: 'your-client-id',
-        secret: 'your-optional-secret-key',
+        clientId: '543cdfdcc57b9847f58d08367c69521563dbcc559abb079d',
+        secret: '60dd4a495aabbf46e2f1c8f78accc99ac83ca0b2ec099e4a821eb10886a437b6',
     }));
 
     return client;

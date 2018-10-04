@@ -11,7 +11,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>bba1a461-18e5-4cde-ba37-be5467ba4619</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>app.js</StartupFile>
+    <StartupFile>joinChat.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -28,7 +28,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app.js" />
+    <Compile Include="joinChat.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="oauthServer.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>
