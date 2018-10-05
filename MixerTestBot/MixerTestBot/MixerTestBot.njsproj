@@ -28,6 +28,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Character.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="joinChat.js">
       <SubType>Code</SubType>
     </Compile>
