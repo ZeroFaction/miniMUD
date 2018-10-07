@@ -1,5 +1,10 @@
 ﻿const Mixer = require('@mixer/client-node');
 const ws = require('ws');
+var m1 = 0;
+var m2 = 0;
+var m3 = 0;
+var m4 = 0;
+var m5 = 0;
 
 let userInfo;
 var commands = [];
@@ -48,6 +53,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         socket.call('msg', [`Hi @${data.username}! Welcome to the guild! Write !help to see what you can do.`]);
     });
 
+
     // React to our !pong command
     socket.on('ChatMessage', data => {
 
@@ -79,49 +85,69 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         }
 
         // Basic replys for testing.
-        if (heard(data, '!help') ) {
-            reply(data.user_name, 'Welcome to the guild! You can do alot while you are here. Write ! followed by one of these commands to perform an action: Drink, Dance, Sing, Train, Volunteer, Attack, Defend, Inspect. Give it a try!');
-            console.log(`Helped ${data.user_name}.`);
+        if (heard(data, '!guildboard')) {
+            whisper(data.user_name, 'Hey ' + data.user_name + '. Thanks for checking the board. Here is what we have available at the moment:');
+            if (m1 < 100) {
+                whisper(data.user_name, `We need info regarding the whereabouts of a missing child. !child to help out.`);
+            }
+            
+            if (m2 < 100) {
+                whisper(data.user_name, `There is a pack of rats destroying all the grain in the local silos. !rats to help eliminate them.`);
+            }
+            
+            if (m3 < 100) {
+                whisper(data.user_name, `A merchant was looking for some help transporting goods. !merchant to help the merchant.`);
+            }
+           
+            if (m4 < 100) {
+                whisper(data.user_name, `Some thugs are harassing tourists on main street. !thugs to go convince them to leave.`);
+            }
+        
+            if (m5 < 100) {
+                whisper(data.user_name, `The guild coffers are running low. !gold to go earn some cold hard, gold coins.`);
+            }
+
+            console.log(`${data.user_name} checked the mission board.`);
         }
-        if (heard(data, '!drink')) {
-            reply(data.user_name, `You take a massive swig of APPLE JUICE. Feeling pretty good.`);
-            console.log(`Drank with ${data.user_name}.`);
+        if (heard(data, '!child') && m1 < 100) {
+            whisper(data.user_name, `You spend some time searching around town for the child.`);
+            m1 += 3;
+            console.log(`${data.user_name} searched for the child. Progress: ` + m1);
+            if (m1 >= 100) {
+                reply(data.user_name, `Followed up on some useful hints and found the missing child!`);
+            }
         }
-        if (heard(data, '!dance')) {
-            reply(data.user_name, `You dance like your feet are on fire!`);
-            console.log(`Danced with ${data.user_name}.`);
+        if (heard(data, '!rats') && m2 < 100) {
+            whisper(data.user_name, `You head to the silos and begin slaughtering rats.`);
+            m2 += 10;
+            console.log(`${data.user_name} killed some rats. Progress: ` + m2);
+            if (m2 >= 100) {
+                reply(data.user_name, `Finished off the last of the filthy rats.`);
+            }
         }
-        if (heard(data, '!sing')) {
-            reply(data.user_name, `OOOOOOOOH, There once was a man named Sully O'Neil, who came from a town that had a windmill, he tried to climb it when along came a gust, and Sully O'Neil returned to the dust!`);
-            console.log(`Sang to ${data.user_name}`);
+        if (heard(data, '!merchant') && m3 < 100) {
+            whisper(data.user_name, `You assist the merchant for a while. There is a lot of work to do.`);
+            m3 += 7;
+            console.log(`${data.user_name} assisted the merchant. Progress: ` + m3);
+            if (m3 >= 100) {
+                reply(data.user_name, `Moved the last bit of goods for the merchant.`);
+            }
         }
-        if (heard(data, '!train')) {
-            reply(data.user_name, `You go out in the back alley and start lifting crates.`);
-            console.log(`Trained with ${data.user_name}.`);
+        if (heard(data, '!thugs') && m4 < 100) {
+            whisper(data.user_name, `You find the thugs and begin to educate them about proper manners.`);
+            m4 += 1;
+            console.log(`${data.user_name} had words with the thugs. Progress: ` + m4);
+            if (m4 >= 100) {
+                reply(data.user_name, `Convinced the last thug to change jobs.`);
+            }
         }
-        if (heard(data, '!volunteer')) {
-            reply(data.user_name, `You have volunteered to join a quest!`);
-            console.log(`${data.user_name} joined the cause.`);
-        }
-        if (heard(data, '!attack')) {
-            reply(data.user_name, `You flail wildly like a child. All those combat classes are really paying off!`);
-            console.log(`${data.user_name} attacked!`);
-        }
-        if (heard(data, '!defend')) {
-            reply(data.user_name, `You take a defensive stance!`);
-            console.log(`${data.user_name} defended!`);
-        }
-        if (heard(data, '!inspect')) {
-            reply(data.user_name, `You find something interesting nearby, and spend a lot of time inspecting it. Like seriously a long time. Others around you begin to look at you and wonder what exactly you are doing. But you know. You are completely enthralled by the thing you found. After closer inspection, you realize it is simply a piece of hair. Nice.`);
-            console.log(`${data.user_name} inspected something.`);
-        }
-        if (heard(data, "!love")) {
-            whisper(data.user_name, `To Sarah Mathis: You are my love, my life, my reason for living. You have supported me through thick and thin and I hope I can continue to go on this journey with you until were both old and grey. I love you and I hope you never forget it. This is my dedication to you. -Matthew Mathis`);
-            console.log("Matt loves Sarah");
-        }
-        if (heard(data, "!montage")) {
-            announce(data.user_name, `80s music begins blaring as ${data.user_name} starts their workout. Sweat dripping, legs pumping. This workout has been taken to the next level. The music cresendos as ${data.user_name} reaches their ultimate goal and completes their training! So sweet!`);
-            console.log("There was a montage, it was awesome.");
+        if (heard(data, '!gold') && m5 < 100) {
+            whisper(data.user_name, `You spend some time looking for odd jobs to help fill the guild coffers.`);
+            m5 += 1;
+            console.log(`${data.user_name} helped fill the guild coffers. Progress: ` + m5);
+            if (m5 >= 100) {
+                reply(data.user_name, `Placed the last coin in the guild coffers. Great job!`);
+            }
         }
     });
 
@@ -154,6 +180,6 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
     return socket.auth(channelId, userId, authkey)
         .then(() => {
             console.log('Login successful');
-            return socket.call('msg', ['Hi. I\'m Ussuri. I will be your guild leader for the day. Type !help to see what the guild has to offer.']);
+            return socket.call('msg', ['The guild hall is open for busines! Check out the !GuildBoard for current guild tasks available.']);
         });
 }

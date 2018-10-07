@@ -43,7 +43,7 @@ character.method('getLocation', function () {
     return this.location;
 });
 
-character.methos('getStats', function () {
+character.method('getStats', function () {
     return '(' + this.getName() + '- Level ' + this.getLevel() + ' ' + this.getClass + '. Currently at location: ' + this.getLocation + ')';
 })
 
