@@ -11,7 +11,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>bba1a461-18e5-4cde-ba37-be5467ba4619</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>joinChat.js</StartupFile>
+    <StartupFile>monitorChat.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -31,10 +31,25 @@
     <Compile Include="character.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="joinChat.js">
+    <Compile Include="guildManager.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="commandManager.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="monitorChat.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="oauthServer.js" />
+    <Compile Include="quest.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="questManager.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="guildTask.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>

@@ -27,7 +27,6 @@
             this.location = newLocation;
         }
 
-
         // Getters
         this.getUsername = function () {
             return this.userName;
