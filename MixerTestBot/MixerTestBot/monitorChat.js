@@ -61,10 +61,11 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
     }
 
     // Replys to the entire channel.
-    function announce(userName, message) {
+    function announce(message) {
         socket.call('msg', [message]);
     }
 
+    /* -----------------------------Depreciated----------------------
     // Checks the first word in a user sent message.
     function heard(data, test_value) {
         var word = data.message.message[0].data.split(' ')[0];
@@ -83,6 +84,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         }
         return false;
     }
+     --------------------To be removed on next iteration.----------*/
 
     // Greet a joined user
     socket.on('UserJoin', data => {
@@ -93,24 +95,28 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
     // Respond to user messages.
     socket.on('ChatMessage', data => {
         var words = [];
-        var primary = '';
-        var secondary = '';
-        var tertiary = '';
+        var primaryCMD = '';
+        var secondaryCMD = '';
+        var tertiaryCMD = '';
+        var optionalCMD;
         words = data.message.message[0].data.split(' ');
-        primary = words[0].toLowerCase();
+        primaryCMD = words[0].toLowerCase();
         if (words[1] != null) {
-            secondary = words[1].toLowerCase();
+            secondaryCMD = words[1].toLowerCase();
         }
         if (words[2] != null) {
-            tertiary = words[2].toLowerCase();
+            tertiaryCMD = words[2].toLowerCase();
+        }
+        if (words[3] != null) {
+            optionalCMD = words[3].toLowerCase();
         }
         
         // Ignore all non ! messages.
-        if (primary[0] == '!') {
+        if (primaryCMD[0] == '!') {
             // Verfiy commands are comming from a user that is not hosting the BOT AND that the command passed is valid.
-            if (data.user_id != userInfo.id && cManager.methods.checkPlayerCommands(primary)) {
+            if (data.user_id != userInfo.id && cManager.methods.checkPlayerCommands(primaryCMD)) {
                 // PUBLIC COMMANDS (Available to any user at any time.)
-                if (primary == '!join') {
+                if (primaryCMD == '!join') {
                     // Exclusion to prevent users from joining twice. This is currently bugged and always returns -1.
                     if (gManager.methods.findUser(data.user_name) == false) {
                         var myChar = new pCharacter(data.user_name, 'TestName', 'TestClass', 1, 0, 10, 10, 10, 10, 10, 10);
@@ -121,22 +127,22 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                 }
 
                 // Tests for reply types.
-                if (primary == '!whisper') {
+                if (primaryCMD == '!whisper') {
                     whisper(data.user_name, 'Yo I can whisper, tee he he');
                     console.log(`Tested ${data.user_name}.`);
                 }
-                if (primary == '!announce') {
+                if (primaryCMD == '!announce') {
                     announce(data.user_name, 'Yo! EVERYONE CAN HEAR THIS!');
                     console.log(`Tested ${data.user_name}.`);
                 }
-                if (primary == '!reply') {
+                if (primaryCMD == '!reply') {
                     reply(data.user_name, 'Yo, what\'s good?');
                     console.log(`Tested ${data.user_name}.`);
                 }
 
                 // RESTRICTED COMMANDS (User must !join before they can access these commands.)
                 if (gManager.methods.findUser(data.user_name) == true) {
-                    if (primary == '!guildboard') {
+                    if (primaryCMD == '!guildboard') {
                         whisper(data.user_name, 'Hey ' + data.user_name + '. Thanks for checking the board. Here is what we have available at the moment:');
                         // Contact the questManager and get descriptions from each available quest including their progress.
                         var tasks = qManager.methods.getAvailableTasks();
@@ -147,23 +153,70 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                     }
 
                     // Verify there is an active task for this command.
-                    if (taskList.indexOf(primary) != -1) {
+                    if (taskList.indexOf(primaryCMD) != -1) {
                         // Do somethign related to the active task.
-                        console.log("Successfully found task: " + primary);
+                        console.log("Successfully found task: " + primaryCMD);
                     }
                 }
             } else if (data.user_id == userInfo.id) {
                 // ADMIN COMMANDS (These commands are restricted to the entity running the bot.)
-                if (primary == '!guild') {
+                if (primaryCMD == '!guild') {
                     console.log('Admin command accessed: Guild');
-                    if (secondary == 'members') {
-                        gManager.methods.checkPlayers();
-                    }
-                    if (secondary == 'initTasks') {
-                        if (tertiary = '' || typeof tertiary != 'number') {
-                            tertiary = 5;
-                        }
-                        qManager.methods.initializeTasks(tertiary);
+                    switch (secondaryCMD) {
+                        case 'list':
+                            switch (tertiaryCMD) {
+                                case "members":
+                                    // Return the information for all registered guild members currently on file.
+                                    gManager.methods.checkPlayers();
+                                    break;
+                                case "member":
+                                    if (gManager.methods.findUser(optionalCMD)) {
+                                        whisper(data.user_name, "Found user: " + optionalCMD);
+                                        // Return the information for a specific guild member by username.
+                                    } else if (optionalCMD == null || optionalCMD == '') {
+                                        whisper(data.user_name, "Enter a username.");
+                                    } else {
+                                        whisper(data.user_name, "User not found: " + optionalCMD);
+                                    }
+                                    break;
+                                default:
+                                    whisper(data.user_name, "Tertiary commands: members, member");
+                            }
+                            break;
+                        case 'init':
+                            switch (tertiaryCMD) {
+                                case 'tasks':
+                                    taskList = qManager.methods.initializeTasks(5);
+                                    break;
+                                case 'quest':
+                                    // Load a specific quest at run time. Quest name must be one word, no spaces, no caps.
+                                    switch (optionalCMD) {
+                                        case "test":
+                                            announce("The \'Test\' quest has been initialized!");
+                                            console.log("QUEST INITIALIZED: " + optionalCMD);
+                                            break;
+                                        case "dragonborn":
+                                            announce("The \'Dragonborn\' quest has been initialized!");
+                                            console.log("QUEST INITIALIZED: " + optionalCMD);
+                                            break;
+                                        case "castlerush":
+                                            announce("The \'Castle Rush\' quest has been initialized!");
+                                            console.log("QUEST INITIALIZED: " + optionalCMD);
+                                            break;
+                                        case "daleville":
+                                            announce("The \'\Daleville\' quest has been initialized!");
+                                            console.log("QUEST INITIALIZED: " + optionalCMD);
+                                            break;
+                                        default:
+                                            whisper(data.user_name, "Tertiary commands: test, dragonborn, castlerush, daleville");
+                                    }
+                                    break;
+                                default:
+                                    whisper(data.user_name, "Tertiary commands: tasks, quest");
+                            }
+                            break;
+                        default:
+                            whisper(data.user_name, "Secondary commands: list, init");
                     }
                 }
             }

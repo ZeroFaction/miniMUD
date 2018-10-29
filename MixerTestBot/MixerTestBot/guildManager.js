@@ -11,7 +11,7 @@ var methods = {
     // Checks for existing users to prevent doubles.
     findUser: function (_userName) {
         for (var x = 0; x < players.length; x++) {
-            if (players[x].getUsername() == _userName) {
+            if (players[x].getUsername().toLowerCase() == _userName.toLowerCase()) {
                 return true;
             }
         }
