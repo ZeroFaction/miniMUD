@@ -8,13 +8,15 @@
         this.commandArray = taskCommands;
         this.textArray = taskText;
         var completed = false;
+        var taskProgress = 0;
 
-        this.progress = function (value) {
+        this.progressTask = function () {  
             if (!completed) {
-                this.questStep += 1;
-                if (questStep >= questSteps) {
-                    completeQuest();
-                }
+                taskProgress += this.step;
+                if (taskProgress >= 100) {
+                    this.completeTask();
+                } 
+                return taskProgress;
             }
         }
 
@@ -36,12 +38,16 @@
             return this.taskIdentifier;
         }
 
-        this.getCommands = function () {
+        this.getCommandArray = function () {
             return this.commandArray;
         }
 
         this.getTaskDescription = function () {
             return this.textArray[1];
+        }
+
+        this.getTaskTextArray = function () {
+            return this.textArray;
         }
     }
 }

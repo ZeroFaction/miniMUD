@@ -155,7 +155,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                     // Verify there is an active task for this command.
                     if (taskList.indexOf(primaryCMD) != -1) {
                         // Do somethign related to the active task.
-                        console.log("Successfully found task: " + primaryCMD);
+                        whisper(data.user_name, qManager.methods.manageTasks(primaryCMD, secondaryCMD));
                     }
                 }
             } else if (data.user_id == userInfo.id) {

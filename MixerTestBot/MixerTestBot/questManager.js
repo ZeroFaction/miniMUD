@@ -7,6 +7,7 @@ let activeTasks = [];
 let taskProgress = [];
 let activeQuest;
 
+// Exported methods
 var methods = {
     initializeTasks: function (_taskCount) {
         // Task (Name of Task, !command for guild board, Difficulty, step increase per attempt (100 is complete), reward [recepient (guild / player), type (exp / gold), amount]
@@ -23,9 +24,9 @@ var methods = {
         var rats = new task('Rats', '!Rats', 'Easy', 10, ['guild', 'gold', 5], 
             // !Command / flavor text pairs.
             [
-                '!trap', 'You lay some traps for the rats.', 
-                '!kill', 'You decide to go old school and start stomping!', 
-                '!poison', 'You place some poisoned bait for the rats.'
+                'trap', 'You lay some traps for the rats.', 
+                'kill', 'You decide to go old school and start stomping!', 
+                'poison', 'You place some poisoned bait for the rats.'
             ],
             // Progress / flavor text pairs.
             [
@@ -40,9 +41,9 @@ var methods = {
 
         var missingPerson = new task('Missing Person', '!missingPerson', 'Medium', 5, ['guild', 'gold', 25],
             [
-                '!question', 'You ask about the missing person around town',
-                '!search', 'You decide to spend some time searching for the missing person',
-                '!post', 'You create flyers for the missing persons hoping other townfolk will come forward with information'
+                'question', 'You ask about the missing person around town',
+                'search', 'You decide to spend some time searching for the missing person',
+                'post', 'You create flyers for the missing persons hoping other townfolk will come forward with information'
             ],
             [
                 0, 'A distraught farmer has asked that the guild help find his missing daughter.',
@@ -51,11 +52,10 @@ var methods = {
                 50, 'You think you may know of the general area but are missing some key details about the kidnapping.',
                 75, 'You have discovered the whereabouts of the missing child.',
                 100, 'You found the missing child and returned her safely to her father. Amazing!'
-            ]
-        );
+            ]);
         tasks.push(missingPerson);
-
         console.log('MISSSING created');
+
         console.log('All Tasks Created!');
         console.log('Randomizing Tasks...');
 
@@ -68,13 +68,18 @@ var methods = {
         //    var rand = Math.random() * Math.floor(tasks.length);
         //    activeTasks.push(tasks[rand]);
         //}
+        console.log('Tasks Randomized!');
 
+        // ***********************************************************************************
+        // ***********************************************************************************
         // Add all tasks for testing. Use above implementation in final version for randomness.
         for (var x = 0; x < tasks.length; x++) {
             activeTasks.push(tasks[x]);
         }
+        console.log("Tasks Added");
+        // ***********************************************************************************
+        // ***********************************************************************************
 
-        console.log('Tasks Randomized!');
         var taskList = [];
         // Populate the progress tracker for each task created.
         for (var x = 0; x < activeTasks.length; x++) {
@@ -84,9 +89,7 @@ var methods = {
 
         // Verify the progress for each task.
         console.log(activeTasks.length + ' tasks READY');
-        for (var x = 0; x < taskProgress.length; x++) {
-            console.log(activeTasks[x].getTaskName() + " progress: " + taskProgress[x]);
-        }
+        checkTaskProgress();
 
         return taskList;
     },
@@ -108,9 +111,10 @@ var methods = {
         }
     },
     getAvailableQuest: function () {
-        for (var x = 0; x < activeQuests.length; x++) {
-            return activeQuests[x].get
-        }
+        return activeQuest;
+    },
+    getQuestInfo: function (questIndex) {
+        // TBD
     },
     // Packages tasks in a new array that can be read out to chat without requiring access to guildTask.js by monitorChat.js.
     getAvailableTasks: function () {
@@ -120,8 +124,41 @@ var methods = {
         }
         return taskList;   
     },
-    getQuestInfo: function (questIndex) {
+    manageTasks: function (_questID, _command) {
+        for (var x = 0; x < activeTasks.length; x++) {
+            if (activeTasks[x].getTaskCommand().toLowerCase() == _questID) {
+                if (activeTasks[x].getCommandArray().indexOf(_command) != -1) {
+                    var tempProgress = activeTasks[x].progressTask();
+                    console.log("Temp Progress1: " + tempProgress);
+                    if (tempProgress > taskProgress[x]) {
+                        console.log("Temp Progress2: " + tempProgress);
+                        taskProgress[x] = tempProgress;
+                        var taskText = activeTasks[x].getTaskTextArray();
+                        console.log("AT.length " + activeTasks.length);
+                        for (var x = 0; x < taskText.length; x += 2) {
+                            if (tempProgress >= taskText[x]) {
+                                if (tempProgress == 100) {
+                                    return taskText[taskText.length - 1];
+                                    break;
+                                }
+                                continue;
+                            } else {
+                                return taskText[x - 1];
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+}
 
+// Internal methods
+function checkTaskProgress() {
+    for (var x = 0; x < taskProgress.length; x++) {
+        console.log(activeTasks[x].getTaskName() + " progress: " + taskProgress[x]);
     }
 }
 
