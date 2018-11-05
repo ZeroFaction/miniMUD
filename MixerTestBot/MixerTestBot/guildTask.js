@@ -27,6 +27,7 @@
         this.completeTask = function () {
             // Issue EXP to the user. 
             // Complete Quest.
+            console.log("Completing Task: " + this.name);
             completed = true;
         }
 
@@ -48,6 +49,14 @@
 
         this.getTaskTextArray = function () {
             return this.textArray;
+        }
+
+        this.taskComplete = function () {
+            return completed;
+        }
+
+        this.getTaskProgress = function () {
+            return taskProgress;
         }
     }
 }

@@ -1,0 +1,11 @@
+Player feedback for tasks. - Pending
+Task removal after completion. Update guildBoard.
+Character customization. Class, Description, Trait, Appearance.
+Character stats accessible.
+Task rewards accessible !guildBoard completed.
+Reduce spam.
+Quest implementation
+Player requirement for task/quest/discord.
+
+
+

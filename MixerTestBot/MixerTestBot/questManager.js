@@ -4,7 +4,6 @@ var quest = require('./quest.js');
 let quests = [];
 let tasks = [];
 let activeTasks = [];
-let taskProgress = [];
 let activeQuest;
 
 // Exported methods
@@ -17,7 +16,6 @@ var methods = {
         // Purge all arrays if initialized after start.
         tasks = [];
         activeTasks = [];
-        taskProgress = [];
         console.log('INITIALIZING Tasks...');
         console.log('Creating Tasks...');
 
@@ -83,7 +81,6 @@ var methods = {
         var taskList = [];
         // Populate the progress tracker for each task created.
         for (var x = 0; x < activeTasks.length; x++) {
-            taskProgress.push(0);
             taskList.push(activeTasks[x].getTaskCommand().toLowerCase());
         }
 
@@ -120,35 +117,36 @@ var methods = {
     getAvailableTasks: function () {
         var taskList = [];
         for (var x = 0; x < tasks.length; x++) {
-            taskList.push(activeTasks[x].getTaskName() + " : " + activeTasks[x].getTaskCommand() + " : " + activeTasks[x].getTaskDescription());
+            if (!tasks[x].taskComplete()) {
+                taskList.push(activeTasks[x].getTaskName() + " : " + activeTasks[x].getTaskCommand() + " : " + activeTasks[x].getTaskDescription());
+            }
         }
         return taskList;   
     },
+    // Accepts a quest ! command (_questID) and a secondary command (_command) from chat and returns the task status message associated with.
     manageTasks: function (_questID, _command) {
         for (var x = 0; x < activeTasks.length; x++) {
+            // Check if the current ! command has a task associated with it.
             if (activeTasks[x].getTaskCommand().toLowerCase() == _questID) {
+                // Check the current task for the passed sub-command.
                 if (activeTasks[x].getCommandArray().indexOf(_command) != -1) {
-                    var tempProgress = activeTasks[x].progressTask();
-                    console.log("Temp Progress1: " + tempProgress);
-                    if (tempProgress > taskProgress[x]) {
-                        console.log("Temp Progress2: " + tempProgress);
-                        taskProgress[x] = tempProgress;
+                    // Verify the task is not yet completed.
+                    if (!activeTasks[x].taskComplete()) {
+                        // Increment the task progress. Gather current task progress and gather the task progress text array.
+                        activeTasks[x].progressTask();
                         var taskText = activeTasks[x].getTaskTextArray();
-                        console.log("AT.length " + activeTasks.length);
-                        for (var x = 0; x < taskText.length; x += 2) {
-                            if (tempProgress >= taskText[x]) {
+                        var tempProgress = activeTasks[x].getTaskProgress();
+                        // Search through the text array associated with the task and return the associated flavor text.
+                        for (var y = 0; y < taskText.length; y += 2) {
+                            if (tempProgress >= taskText[y]) {
                                 if (tempProgress == 100) {
                                     return taskText[taskText.length - 1];
-                                    break;
                                 }
                                 continue;
-                            } else {
-                                return taskText[x - 1];
-                                break;
-                            }
+                            } else { return taskText[y - 1];}
                         }
-                    }
-                }
+                    } else { return "This task has been completed. Thank\'s for your participation!";}
+                } else { return "That sub-command doesn\'t exist: " + _command;}
                 break;
             }
         }
@@ -157,8 +155,8 @@ var methods = {
 
 // Internal methods
 function checkTaskProgress() {
-    for (var x = 0; x < taskProgress.length; x++) {
-        console.log(activeTasks[x].getTaskName() + " progress: " + taskProgress[x]);
+    for (var x = 0; x < activeTasks.length; x++) {
+        console.log(activeTasks[x].getTaskName() + " progress: " + activeTasks[x].getTaskProgress());
     }
 }
 

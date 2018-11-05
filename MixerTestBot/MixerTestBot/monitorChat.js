@@ -13,6 +13,7 @@ const client = new Mixer.Client(new Mixer.DefaultRequestRunner());
 // the required information to all of our requests after this call.
 client.use(new Mixer.OAuthProvider(client, {
     tokens: {
+        // access: 'VOowM9bK94cb1yWF5euQdix7uGbHAv4aHCoWL4wyzOlqw8bYGYg15UAXcTgztMhc',
         access: 'bz6E7vA3HD2M58P6uzqeIar5mklGxz9nTLk7YR3odkS4VlxJe5gSbW8w4v8NGzOk',
         expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
     },
@@ -26,6 +27,7 @@ client.request('GET', 'users/current')
     })
     .then(response => {
         const body = response.body;
+        // return createChatSocket(userInfo.id, 49997751, body.endpoints, body.authkey);
         return createChatSocket(userInfo.id, userInfo.channel.id, body.endpoints, body.authkey);
     })
     .catch(error => {
@@ -89,7 +91,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
     // Greet a joined user
     socket.on('UserJoin', data => {
         console.log("A user joined the session: " + data.username);
-        socket.call('msg', [`Hi @${data.username}! Welcome to the guild! Write !help to see what you can do.`]);
+        whisper(data.user_name, 'Welcome to the guild! Thanks for stopping by. Type !help to see what you can do while you are here.');
     });
 
     // Respond to user messages.
@@ -114,6 +116,9 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         // Ignore all non ! messages.
         if (primaryCMD[0] == '!') {
             // Verfiy commands are comming from a user that is not hosting the BOT AND that the command passed is valid.
+            // **************************************************************
+            // checkPlayerCommands is returning true always, check and verify it later.
+            // **************************************************************
             if (data.user_id != userInfo.id && cManager.methods.checkPlayerCommands(primaryCMD)) {
                 // PUBLIC COMMANDS (Available to any user at any time.)
                 if (primaryCMD == '!join') {
@@ -156,6 +161,8 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                     if (taskList.indexOf(primaryCMD) != -1) {
                         // Do somethign related to the active task.
                         whisper(data.user_name, qManager.methods.manageTasks(primaryCMD, secondaryCMD));
+                    } else {
+                        whisper(data.user_name, "That command does not exist: " + primaryCMD);
                     }
                 }
             } else if (data.user_id == userInfo.id) {
