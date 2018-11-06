@@ -1,5 +1,5 @@
 Player feedback for tasks. - Pending
-Task removal after completion. Update guildBoard.
+Task removal after completion. Update guildBoard. - Completed, task not removed, but is marked as complete and will report completed status to users attempting to access it.
 Character customization. Class, Description, Trait, Appearance.
 Character stats accessible.
 Task rewards accessible !guildBoard completed.

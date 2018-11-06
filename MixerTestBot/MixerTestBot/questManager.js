@@ -128,10 +128,10 @@ var methods = {
         for (var x = 0; x < activeTasks.length; x++) {
             // Check if the current ! command has a task associated with it.
             if (activeTasks[x].getTaskCommand().toLowerCase() == _questID) {
-                // Check the current task for the passed sub-command.
-                if (activeTasks[x].getCommandArray().indexOf(_command) != -1) {
-                    // Verify the task is not yet completed.
-                    if (!activeTasks[x].taskComplete()) {
+                // Verify the task is not yet completed.
+                if (!activeTasks[x].taskComplete()) {
+                    // Check the current task for the passed sub-command.
+                    if (activeTasks[x].getCommandArray().indexOf(_command) != -1) {
                         // Increment the task progress. Gather current task progress and gather the task progress text array.
                         activeTasks[x].progressTask();
                         var taskText = activeTasks[x].getTaskTextArray();
@@ -145,8 +145,8 @@ var methods = {
                                 continue;
                             } else { return taskText[y - 1];}
                         }
-                    } else { return "This task has been completed. Thank\'s for your participation!";}
-                } else { return "That sub-command doesn\'t exist: " + _command;}
+                    } else { return "That sub-command doesn\'t exist: " + _command;}
+                } else { return "This task has been completed. Thank\'s for your participation!";}
                 break;
             }
         }

@@ -133,7 +133,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
 
                 // Tests for reply types.
                 if (primaryCMD == '!whisper') {
-                    whisper(data.user_name, 'Yo I can whisper, tee he he');
+                    whisper(data.user_name, 'Yo, only you can see this message.');
                     console.log(`Tested ${data.user_name}.`);
                 }
                 if (primaryCMD == '!announce') {
@@ -141,7 +141,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                     console.log(`Tested ${data.user_name}.`);
                 }
                 if (primaryCMD == '!reply') {
-                    reply(data.user_name, 'Yo, what\'s good?');
+                    reply(data.user_name, 'You have been called out! What\'s good?');
                     console.log(`Tested ${data.user_name}.`);
                 }
 
@@ -158,10 +158,11 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                     }
 
                     // Verify there is an active task for this command.
-                    if (taskList.indexOf(primaryCMD) != -1) {
+                    else if (taskList.indexOf(primaryCMD) != -1) {
                         // Do somethign related to the active task.
                         whisper(data.user_name, qManager.methods.manageTasks(primaryCMD, secondaryCMD));
-                    } else {
+                    } else if (primaryCMD != '!join') {
+                        // This shouldn't check every time. Need to gate it somehow.
                         whisper(data.user_name, "That command does not exist: " + primaryCMD);
                     }
                 }
